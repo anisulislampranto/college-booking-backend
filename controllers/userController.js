@@ -1,5 +1,6 @@
 const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 exports.userSignup = async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -14,7 +15,8 @@ exports.userSignup = async (req, res, next) => {
       password: hashedPassword,
     });
 
-    console.log("user created", createdUser);
+    const token = jwt.sign({ email }, "privateKey090");
+    res.cookie("token", token);
 
     // Exclude the password field before sending the response
     const userResponse = { ...createdUser._doc };
@@ -24,4 +26,9 @@ exports.userSignup = async (req, res, next) => {
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
+};
+
+exports.logout = async (req, res, next) => {
+  res.cookie("token", "");
+  res.send("logged out");
 };
