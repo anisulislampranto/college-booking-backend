@@ -10,11 +10,14 @@ exports.getAllColleges = async (req, res, next) => {
 
 exports.createCollege = async (req, res, next) => {
   const { name } = req.body;
-
-  console.log("req.file", req.file);
+  const { path } = req.file;
 
   try {
-    const createdCollege = await College.create({ name: name });
+    const createdCollege = await College.create({
+      name: name,
+      image: path,
+    });
+
     res.json(createdCollege);
   } catch (error) {
     res.status(400).json({ error: error.message });
