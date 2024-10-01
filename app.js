@@ -6,7 +6,9 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 const collegeRouter = require("./routes/collegeRouter");
-const { default: mongoose } = require("mongoose");
+const userRouter = require("./routes/userRouter");
+
+const mongoose = require("mongoose");
 
 // middleware
 app.use(cors());
@@ -14,6 +16,7 @@ app.use(express.json());
 
 // routes
 app.use("/api/colleges", collegeRouter);
+app.use("/api/users", userRouter);
 
 // MongoDB connection
 mongoose
