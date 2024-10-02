@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.isLoggedIn = async (req, res, next) => {
   if (!req.cookies || !req.cookies.token) {
-    res.send("You Must be logged in");
+    res.json({ message: "You Must be logged in" });
   } else {
     const data = jwt.verify(req.cookies.token, JWT_SECRET);
     req.user = data;
@@ -29,7 +29,7 @@ exports.googleAuth = async (req, res, next) => {
 
     const { email, name, picture } = data;
 
-    let user = await userModel.findOne({ email });
+    let user = await userModel.findOne({ email }).populate("colleges");
 
     if (!user) {
       user = await userModel.create({
@@ -83,6 +83,8 @@ exports.signup = async (req, res, next) => {
     const userResponse = { ...createdUser._doc, token };
     delete userResponse.password;
 
+    console.log("user created", userResponse);
+
     res.json(userResponse);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -117,6 +119,7 @@ exports.login = async (req, res, next) => {
 
         // Create user response without sending sensitive info
         const userResponse = {
+          _id: user.id,
           email: user.email,
           name: user.name, // assuming user has a name
           token,

@@ -1,5 +1,4 @@
 const College = require("../models/college");
-const ObjectId = require("mongodb").ObjectId;
 
 exports.getAllColleges = async (req, res, next) => {
   try {
@@ -46,10 +45,6 @@ exports.getCollege = async (req, res, next) => {
       return res.status(404).json({ error: "College not found" });
     }
 
-    // Log the college data
-    console.log("college", college);
-
-    // Send the college data as response
     res.json(college);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -77,7 +72,8 @@ exports.createCollege = async (req, res, next) => {
 };
 
 exports.updateCollege = async (req, res, next) => {
-  const { name, admissionDate, events, researches, sports, rating } = req.body;
+  const { name, admissionDate, events, researches, sports, rating, students } =
+    req.body;
 
   try {
     const updatedCollege = await College.findByIdAndUpdate(
@@ -89,6 +85,7 @@ exports.updateCollege = async (req, res, next) => {
         researches,
         sports,
         rating,
+        students,
         ...(req?.file?.path && { image: req?.file?.path }),
       },
       { new: true, runValidators: true }

@@ -9,9 +9,11 @@ const port = process.env.PORT || 4000;
 const researchRouter = require("./routes/researchRouter");
 const collegeRouter = require("./routes/collegeRouter");
 const galleryRouter = require("./routes/galleryRouter");
+const reviewRouter = require("./routes/reviewRouter");
 const eventRouter = require("./routes/eventRouter");
 const sportRouter = require("./routes/sportRouter");
 const authRouter = require("./routes/authRouter");
+const userRouter = require("./routes/userRouter");
 
 const mongoose = require("mongoose");
 
@@ -27,7 +29,9 @@ app.use("/api/sports", sportRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/gallery", galleryRouter);
 
-// app.use("/api/users", userRouter);
+app.use("/api/reviews", reviewRouter);
+
+app.use("/api/users", userRouter);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 

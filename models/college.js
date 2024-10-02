@@ -8,7 +8,7 @@ const collegeSchema = new mongoose.Schema(
     events: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }],
     researches: [{ type: mongoose.Schema.Types.ObjectId, ref: "Research" }],
     sports: [{ type: mongoose.Schema.Types.ObjectId, ref: "Sport" }],
-    rating: { type: Number, default: 0 },
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
     students: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }

@@ -1,9 +1,4 @@
 const express = require("express");
-const {
-  getEvent,
-  createEvent,
-  getEvents,
-} = require("../controllers/eventController");
 const upload = require("../config/multerConfig");
 const {
   getResearches,
