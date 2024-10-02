@@ -1,4 +1,5 @@
 const College = require("../models/college");
+const ObjectId = require("mongodb").ObjectId;
 
 exports.getAllColleges = async (req, res, next) => {
   try {
@@ -33,13 +34,23 @@ exports.getAllColleges = async (req, res, next) => {
 
 exports.getCollege = async (req, res, next) => {
   try {
-    const college = College.findOne({ _id: req.params.id })
+    // Await the result of the query
+    const college = await College.findOne({
+      _id: req.params.id,
+    })
       .populate("events")
       .populate("researches")
       .populate("sports");
 
+    if (!college) {
+      return res.status(404).json({ error: "College not found" });
+    }
+
+    // Log the college data
+    console.log("college", college);
+
+    // Send the college data as response
     res.json(college);
-    res.json(createdCollege);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
