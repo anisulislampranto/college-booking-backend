@@ -1,14 +1,33 @@
 const College = require("../models/college");
 
 exports.getAllColleges = async (req, res, next) => {
-  const colleges = await College.find()
-    .populate("events")
-    .populate("researches");
+  try {
+    const { limit, search } = req.query;
 
-  res.status(201).json({
-    status: "success",
-    colleges,
-  });
+    // Build the query object
+    let query = {};
+
+    // If search query exists, perform a case-insensitive search on the 'name' field
+    if (search) {
+      query.name = { $regex: search, $options: "i" }; // Case-insensitive search
+    }
+
+    // Perform the database query with optional search and populate related fields
+    const colleges = await College.find(query)
+      .populate("events")
+      .populate("researches")
+      .limit(limit ? parseInt(limit) : null); // Limit the number of results if 'limit' is provided
+
+    res.status(200).json({
+      status: "success",
+      colleges,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
 };
 
 exports.getCollege = async (req, res, next) => {
