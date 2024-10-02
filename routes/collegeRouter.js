@@ -5,11 +5,12 @@ const {
   getCollege,
 } = require("../controllers/collegeController");
 const upload = require("../config/multerConfig");
+const { isLoggedIn } = require("../controllers/authController");
 
 const router = express.Router();
 
 router.get("/", getAllColleges);
 router.get("/:id", getCollege);
-router.post("/create", upload.single("image"), createCollege);
+router.post("/create", isLoggedIn, upload.single("image"), createCollege);
 
 module.exports = router;

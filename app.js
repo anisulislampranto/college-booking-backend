@@ -6,17 +6,18 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 const collegeRouter = require("./routes/collegeRouter");
-const userRouter = require("./routes/userRouter");
+const authRouter = require("./routes/authRouter");
 
 const mongoose = require("mongoose");
 
 // middleware
-app.use(cors({ origin: process.env.FRONTEND_URL }));
+app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(express.json());
 
 // routes
 app.use("/api/colleges", collegeRouter);
-app.use("/api/users", userRouter);
+app.use("/api/auth", authRouter);
+// app.use("/api/users", userRouter);
 
 // MongoDB connection
 mongoose
