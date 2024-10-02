@@ -6,14 +6,14 @@ const app = express();
 
 const port = process.env.PORT || 4000;
 
-const researchRouter = require("./routes/researchRouter");
-const collegeRouter = require("./routes/collegeRouter");
-const galleryRouter = require("./routes/galleryRouter");
-const reviewRouter = require("./routes/reviewRouter");
-const eventRouter = require("./routes/eventRouter");
-const sportRouter = require("./routes/sportRouter");
-const authRouter = require("./routes/authRouter");
-const userRouter = require("./routes/userRouter");
+const researchRouter = require("./app/routes/researchRouter");
+const collegeRouter = require("./app/routes/collegeRouter");
+const galleryRouter = require("./app/routes/galleryRouter");
+const reviewRouter = require("./app/routes/reviewRouter");
+const eventRouter = require("./app/routes/eventRouter");
+const sportRouter = require("./app/routes/sportRouter");
+const authRouter = require("./app/routes/authRouter");
+const userRouter = require("./app/routes/userRouter");
 
 const mongoose = require("mongoose");
 
