@@ -5,6 +5,7 @@ const app = express();
 
 const port = process.env.PORT || 4000;
 
+const researchRouter = require("./routes/researchRouter");
 const collegeRouter = require("./routes/collegeRouter");
 const eventRouter = require("./routes/eventRouter");
 const authRouter = require("./routes/authRouter");
@@ -16,6 +17,7 @@ app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(express.json());
 
 // routes
+app.use("/api/researches", researchRouter);
 app.use("/api/colleges", collegeRouter);
 app.use("/api/events", eventRouter);
 app.use("/api/auth", authRouter);

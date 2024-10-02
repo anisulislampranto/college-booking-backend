@@ -6,7 +6,7 @@ const collegeSchema = new mongoose.Schema(
     image: { type: String, required: true },
     admissionDate: { type: String },
     events: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }],
-    researches: [{ type: mongoose.Schema.Types.ObjectId, ref: "Researches" }],
+    researches: [{ type: mongoose.Schema.Types.ObjectId, ref: "Research" }],
     sports: { type: String },
     rating: { type: Number, default: 0 },
     students: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

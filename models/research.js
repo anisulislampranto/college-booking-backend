@@ -6,6 +6,7 @@ const researchSchema = new mongoose.Schema(
     image: { type: String, required: true },
     description: { type: String, required: true },
     participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    college: { type: mongoose.Schema.Types.ObjectId, ref: "College" },
   },
   { timestamps: true }
 );

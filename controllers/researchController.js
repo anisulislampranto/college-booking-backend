@@ -1,44 +1,43 @@
-const Event = require("../models/event");
+const Research = require("../models/research");
 
-exports.getEvents = async (req, res, next) => {
+exports.getResearches = async (req, res, next) => {
   try {
-    const events = await Event.find();
+    const researches = await Research.find();
     res.status(201).json({
       status: "success",
-      events,
+      researches,
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-exports.getEvent = async (req, res, next) => {
+exports.getResearch = async (req, res, next) => {
   try {
-    const event = Event.findOne({ _id: req.params.id });
+    const research = Research.findOne({ _id: req.params.id });
 
     res.status(201).json({
       status: "success",
-      event,
+      research,
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-exports.createEvent = async (req, res, next) => {
-  const { name, date, description, college } = req.body;
+exports.createResearch = async (req, res, next) => {
+  const { name, description, college } = req.body;
   const { path } = req.file;
 
   try {
-    const createdEvent = await Event.create({
+    const createdResearch = await Research.create({
       name,
-      date,
       description,
       college,
       image: path,
     });
 
-    res.json(createdEvent);
+    res.json(createdResearch);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
