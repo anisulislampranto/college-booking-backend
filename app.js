@@ -6,6 +6,7 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 const collegeRouter = require("./routes/collegeRouter");
+const eventRouter = require("./routes/eventRouter");
 const authRouter = require("./routes/authRouter");
 
 const mongoose = require("mongoose");
@@ -16,6 +17,7 @@ app.use(express.json());
 
 // routes
 app.use("/api/colleges", collegeRouter);
+app.use("/api/events", eventRouter);
 app.use("/api/auth", authRouter);
 // app.use("/api/users", userRouter);
 

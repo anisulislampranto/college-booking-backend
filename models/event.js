@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const collegeSchema = new mongoose.Schema(
+const eventSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     image: { type: String, required: true },
@@ -11,4 +11,4 @@ const collegeSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Events", collegeSchema);
+module.exports = mongoose.model("Event", eventSchema);
