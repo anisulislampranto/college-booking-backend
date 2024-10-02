@@ -1,6 +1,7 @@
 const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { oauth2Client } = require("../utils/googleClient");
 const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.isLoggedIn = async (req, res, next) => {
@@ -10,6 +11,50 @@ exports.isLoggedIn = async (req, res, next) => {
     const data = jwt.verify(req.cookies.token, JWT_SECRET);
     req.user = data;
     next();
+  }
+};
+
+/* GET Google Authentication API. */
+exports.googleAuth = async (req, res, next) => {
+  const code = req.query.code;
+
+  try {
+    const googleRes = await oauth2Client.getToken(code);
+
+    oauth2Client.setCredentials(googleRes.tokens);
+    const userRes = await fetch(
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
+    );
+    const data = await userRes.json();
+
+    const { email, name, picture } = data;
+
+    let user = await userModel.findOne({ email });
+
+    if (!user) {
+      user = await userModel.create({
+        name,
+        email,
+        image: picture,
+      });
+
+      console.log("user inside", user);
+    }
+
+    const { _id } = user;
+    const token = jwt.sign({ _id, email }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    res.cookie("token", token).status(200).json({
+      message: "success",
+      token,
+      user,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
   }
 };
 
