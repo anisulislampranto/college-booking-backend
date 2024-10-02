@@ -1,10 +1,10 @@
 const express = require("express");
-const upload = require("../config/multerConfig");
 const {
   getResearches,
   getResearch,
   createResearch,
 } = require("../controllers/researchController");
+const upload = require("../config/multerConfig");
 
 const router = express.Router();
 

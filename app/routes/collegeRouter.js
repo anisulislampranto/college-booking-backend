@@ -5,8 +5,8 @@ const {
   getCollege,
   updateCollege,
 } = require("../controllers/collegeController");
-const upload = require("../config/multerConfig");
 const { isLoggedIn } = require("../controllers/authController");
+const upload = require("../config/multerConfig");
 
 const router = express.Router();
 

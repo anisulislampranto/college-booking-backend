@@ -1,11 +1,11 @@
 const express = require("express");
-const upload = require("../config/multerConfig");
 const {
   getSports,
   getSport,
   createSport,
   updateSport,
 } = require("../controllers/sportController");
+const upload = require("../config/multerConfig");
 
 const router = express.Router();
 
