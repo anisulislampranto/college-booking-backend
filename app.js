@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const app = express();
 
 const port = process.env.PORT || 4000;
@@ -8,6 +9,7 @@ const port = process.env.PORT || 4000;
 const researchRouter = require("./routes/researchRouter");
 const collegeRouter = require("./routes/collegeRouter");
 const eventRouter = require("./routes/eventRouter");
+const sportRouter = require("./routes/sportRouter");
 const authRouter = require("./routes/authRouter");
 
 const mongoose = require("mongoose");
@@ -20,8 +22,12 @@ app.use(express.json());
 app.use("/api/researches", researchRouter);
 app.use("/api/colleges", collegeRouter);
 app.use("/api/events", eventRouter);
+app.use("/api/sports", sportRouter);
 app.use("/api/auth", authRouter);
+
 // app.use("/api/users", userRouter);
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // MongoDB connection
 mongoose

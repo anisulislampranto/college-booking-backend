@@ -16,6 +16,7 @@ exports.getAllColleges = async (req, res, next) => {
     const colleges = await College.find(query)
       .populate("events")
       .populate("researches")
+      .populate("sports")
       .limit(limit ? parseInt(limit) : null); // Limit the number of results if 'limit' is provided
 
     res.status(200).json({
@@ -34,7 +35,8 @@ exports.getCollege = async (req, res, next) => {
   try {
     const college = College.findOne({ _id: req.params.id })
       .populate("events")
-      .populate("researches");
+      .populate("researches")
+      .populate("sports");
 
     res.json(college);
     res.json(createdCollege);
