@@ -35,6 +35,10 @@ app.use("/api/users", userRouter);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+app.use("/", (req, res, next) => {
+  res.send("hello world");
+});
+
 // MongoDB connection
 mongoose
   .connect(process.env.DB_URI, {
