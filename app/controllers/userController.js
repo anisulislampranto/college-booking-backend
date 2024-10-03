@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const College = require("../models/college");
+const bcrypt = require("bcrypt");
 
 exports.updateUser = async (req, res, next) => {
   const { address, dateOfBirth, email, name, phoneNumber, college } = req.body;
@@ -32,6 +33,35 @@ exports.updateUser = async (req, res, next) => {
     }
 
     res.json(updatedUser);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.updateMe = async (req, res, next) => {
+  const { name, address, password } = req.body;
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        name,
+        address,
+        password: hashedPassword,
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!this.updateUser) {
+      return res.status(404).json({ error: "College not found" });
+    }
+
+    const userResponse = { ...updatedUser._doc };
+    delete userResponse.password;
+
+    res.json(userResponse);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

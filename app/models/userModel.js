@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema(
     image: { type: String },
     email: { type: String, required: true, unique: true },
     password: { type: String },
+    address: { type: String },
     colleges: [{ type: mongoose.Schema.Types.ObjectId, ref: "College" }],
   },
   { timestamps: true }
