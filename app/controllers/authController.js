@@ -2,6 +2,7 @@ const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { oauth2Client } = require("../utils/googleClient");
+const College = require("../models/college");
 const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.isLoggedIn = async (req, res, next) => {
@@ -102,7 +103,7 @@ exports.login = async (req, res, next) => {
     }
 
     // Compare password
-    bcrypt.compare(password, user.password, function (err, isMatch) {
+    bcrypt.compare(password, user.password, async function (err, isMatch) {
       if (err) {
         return res
           .status(500)
@@ -117,11 +118,19 @@ exports.login = async (req, res, next) => {
           { expiresIn: "1h" } // Token expiration time
         );
 
+        // Find colleges where the students array includes the user ID
+        const colleges = await College.find({
+          students: user._id,
+        });
+
+        console.log("colleges", colleges);
+
         // Create user response without sending sensitive info
         const userResponse = {
           _id: user.id,
           email: user.email,
-          name: user.name, // assuming user has a name
+          name: user.name,
+          colleges, // Include the colleges the user is part of
           token,
         };
 
