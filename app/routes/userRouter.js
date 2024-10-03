@@ -1,10 +1,10 @@
 const express = require("express");
+const upload = require("../config/multerConfig");
 const {
   updateUser,
   getMe,
   updateMe,
 } = require("../controllers/userController");
-const upload = require("../config/multerConfig");
 
 const router = express.Router();
 
