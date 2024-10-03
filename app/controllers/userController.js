@@ -3,7 +3,11 @@ const College = require("../models/college");
 const bcrypt = require("bcrypt");
 
 exports.updateUser = async (req, res, next) => {
-  const { address, dateOfBirth, email, name, phoneNumber, college } = req.body;
+  const { address, dateOfBirth, email, name, phoneNumber, college, imageLink } =
+    req.body;
+
+  console.log("req.body", req.body);
+  console.log("req.params.id,", req.params.id);
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
@@ -15,11 +19,11 @@ exports.updateUser = async (req, res, next) => {
         name,
         phoneNumber,
         $addToSet: { colleges: college },
-        ...(req?.file?.path && { image: req?.file?.path }),
+        imageLink,
       },
       { new: true, runValidators: true }
     ).populate("colleges");
-
+    console.log("updatedUser", updatedUser);
     const updatedCollege = await College.findByIdAndUpdate(
       college,
       {
@@ -27,11 +31,9 @@ exports.updateUser = async (req, res, next) => {
       },
       { new: true, runValidators: true }
     );
-
     if (!this.updateUser) {
       return res.status(404).json({ error: "College not found" });
     }
-
     res.json(updatedUser);
   } catch (error) {
     res.status(400).json({ error: error.message });
