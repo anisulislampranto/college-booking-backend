@@ -12,33 +12,36 @@ exports.getResearches = async (req, res, next) => {
   }
 };
 
-exports.getResearch = async (req, res, next) => {
-  try {
-    const research = Research.findOne({ _id: req.params.id });
+// exports.getResearch = async (req, res, next) => {
+//   console.log("req.params.id ", req.params.id);
 
-    res.status(201).json({
-      status: "success",
-      research,
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
+//   try {
+//     const research = Research.findOne({ _id: req.params.id });
 
-exports.createResearch = async (req, res, next) => {
-  const { name, description, college } = req.body;
-  const { path } = req.file;
+//     console.log("research", research);
 
-  try {
-    const createdResearch = await Research.create({
-      name,
-      description,
-      college,
-      image: path,
-    });
+//     res.status(201).json({
+//       status: "success",
+//       research,
+//     });
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// };
 
-    res.json(createdResearch);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
+// exports.createResearch = async (req, res, next) => {
+//   const { name, description, college } = req.body;
+
+//   try {
+//     const createdResearch = await Research.create({
+//       name,
+//       description,
+//       college,
+//       ...(req?.file?.path && { image: req?.file?.path }),
+//     });
+
+//     res.json(createdResearch);
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// };
