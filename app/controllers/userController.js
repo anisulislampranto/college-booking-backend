@@ -23,7 +23,7 @@ exports.updateUser = async (req, res, next) => {
       },
       { new: true, runValidators: true }
     ).populate("colleges");
-    console.log("updatedUser", updatedUser);
+
     const updatedCollege = await College.findByIdAndUpdate(
       college,
       {
@@ -31,6 +31,7 @@ exports.updateUser = async (req, res, next) => {
       },
       { new: true, runValidators: true }
     );
+
     if (!this.updateUser) {
       return res.status(404).json({ error: "College not found" });
     }

@@ -10,6 +10,7 @@ const collegeSchema = new mongoose.Schema(
     sports: [{ type: mongoose.Schema.Types.ObjectId, ref: "Sport" }],
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
     students: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    gallery: [{ type: mongoose.Schema.Types.ObjectId, ref: "Gallery" }],
   },
   { timestamps: true }
 );
