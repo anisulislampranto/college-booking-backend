@@ -5,6 +5,10 @@ const { oauth2Client } = require("../utils/googleClient");
 const College = require("../models/college");
 const JWT_SECRET = process.env.JWT_SECRET;
 
+const createToken = (_id, email) => {
+  return jwt.sign({ _id, email }, process.env.JWT_SECRET, { expiresIn: "1d" });
+};
+
 exports.isLoggedIn = async (req, res, next) => {
   if (!req.cookies || !req.cookies.token) {
     res.json({ message: "You Must be logged in" });
@@ -23,6 +27,7 @@ exports.googleAuth = async (req, res, next) => {
     const googleRes = await oauth2Client.getToken(code);
 
     oauth2Client.setCredentials(googleRes.tokens);
+
     const userRes = await fetch(
       `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
     );
@@ -38,14 +43,9 @@ exports.googleAuth = async (req, res, next) => {
         email,
         image: picture,
       });
-
-      console.log("user inside", user);
     }
 
-    const { _id } = user;
-    const token = jwt.sign({ _id, email }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = createToken(user._id);
 
     res.cookie("token", token).status(200).json({
       message: "success",
@@ -62,31 +62,35 @@ exports.googleAuth = async (req, res, next) => {
 exports.signup = async (req, res, next) => {
   const { name, email, password } = req.body;
 
-  // Find user by email
-  const user = await userModel.findOne({ email });
-  if (user) {
-    return res.json({ message: "Already have an account." });
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
   try {
+    if (!name || !email || !password) {
+      throw Error("All fields are required!!!");
+    }
+
+    const user = await userModel.findOne({ email });
+
+    if (user) {
+      return res.json({ message: "Already have an account." });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const createdUser = await userModel.create({
       name,
       email,
       password: hashedPassword,
     });
 
-    const token = jwt.sign({ email, name }, JWT_SECRET);
-    res.cookie("token", token);
+    const token = createToken(createdUser._id, email);
 
     // Exclude the password field before sending the response
     const userResponse = { ...createdUser._doc, token };
     delete userResponse.password;
 
-    console.log("user created", userResponse);
-
-    res.status(201).json(userResponse);
+    res.status(201).json({
+      message: "Signed Up successfully!",
+      data: userResponse,
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -96,51 +100,37 @@ exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    // Find user by email
-    const user = await userModel.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User doesn't exist" });
+    if (!email || !password) {
+      throw Error("All fields are required!!!");
     }
 
-    // Compare password
-    bcrypt.compare(password, user.password, async function (err, isMatch) {
-      if (err) {
-        return res
-          .status(500)
-          .json({ error: "Error while comparing passwords" });
-      }
+    const user = await userModel.findOne({ email });
 
-      if (isMatch) {
-        // Generate JWT if password matches
-        const token = jwt.sign(
-          { userId: user._id, email: user.email },
-          JWT_SECRET,
-          { expiresIn: "1h" } // Token expiration time
-        );
+    if (!user) {
+      return res.status(404).json({ message: "Incorrect Email" });
+    }
 
-        // Find colleges where the students array includes the user ID
-        const colleges = await College.find({
-          students: user._id,
-        });
+    const isMatch = await bcrypt.compare(password, user.password);
 
-        console.log("colleges", colleges);
+    if (!isMatch) {
+      throw Error("Incorrect password");
+    }
 
-        // Create user response without sending sensitive info
-        const userResponse = {
-          _id: user.id,
-          email: user.email,
-          name: user.name,
-          colleges, // Include the colleges the user is part of
-          token,
-        };
+    const colleges = await College.find({ students: user._id });
 
-        return res.cookie("token", token).status(200).json(userResponse);
-      } else {
-        // Passwords do not match
-        return res
-          .status(401)
-          .json({ success: false, message: "Invalid credentials" });
-      }
+    const token = createToken(user._id, user.email);
+
+    const userResponse = {
+      _id: user.id,
+      email: user.email,
+      name: user.name,
+      colleges,
+      token,
+    };
+
+    res.status(200).json({
+      message: "Logged In successfully!",
+      data: userResponse,
     });
   } catch (error) {
     return res.status(400).json({ error: error.message });

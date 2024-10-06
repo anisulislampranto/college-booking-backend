@@ -24,14 +24,12 @@ app.use(express.json());
 // routes
 app.use("/api/researches", researchRouter);
 app.use("/api/colleges", collegeRouter);
+app.use("/api/gallery", galleryRouter);
+app.use("/api/reviews", reviewRouter);
 app.use("/api/events", eventRouter);
 app.use("/api/sports", sportRouter);
-app.use("/api/auth", authRouter);
-app.use("/api/gallery", galleryRouter);
-
-app.use("/api/reviews", reviewRouter);
-
 app.use("/api/users", userRouter);
+app.use("/api/auth", authRouter);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
