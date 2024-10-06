@@ -8,6 +8,7 @@ const port = process.env.PORT || 4000;
 
 const researchRouter = require("./app/routes/researchRouter");
 const collegeRouter = require("./app/routes/collegeRouter");
+const subjectRouter = require("./app/routes/subjectRouter");
 const galleryRouter = require("./app/routes/galleryRouter");
 const reviewRouter = require("./app/routes/reviewRouter");
 const eventRouter = require("./app/routes/eventRouter");
@@ -24,6 +25,7 @@ app.use(express.json());
 // routes
 app.use("/api/researches", researchRouter);
 app.use("/api/colleges", collegeRouter);
+app.use("/api/subjects", subjectRouter);
 app.use("/api/gallery", galleryRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/events", eventRouter);
