@@ -136,8 +136,3 @@ exports.login = async (req, res, next) => {
     return res.status(400).json({ error: error.message });
   }
 };
-
-exports.logout = async (req, res, next) => {
-  res.cookie("token", "");
-  res.send("logged out");
-};
