@@ -11,6 +11,7 @@ const collegeSchema = new mongoose.Schema(
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
     students: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     gallery: [{ type: mongoose.Schema.Types.ObjectId, ref: "Gallery" }],
+    subjects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Subject" }],
   },
   { timestamps: true }
 );
