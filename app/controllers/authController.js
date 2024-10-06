@@ -1,4 +1,4 @@
-const userModel = require("../models/userModel");
+const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { oauth2Client } = require("../utils/googleClient");
@@ -6,17 +6,7 @@ const College = require("../models/college");
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const createToken = (_id, email) => {
-  return jwt.sign({ _id, email }, process.env.JWT_SECRET, { expiresIn: "1d" });
-};
-
-exports.isLoggedIn = async (req, res, next) => {
-  if (!req.cookies || !req.cookies.token) {
-    res.json({ message: "You Must be logged in" });
-  } else {
-    const data = jwt.verify(req.cookies.token, JWT_SECRET);
-    req.user = data;
-    next();
-  }
+  return jwt.sign({ _id, email }, JWT_SECRET, { expiresIn: "1d" });
 };
 
 /* GET Google Authentication API. */
@@ -35,10 +25,10 @@ exports.googleAuth = async (req, res, next) => {
 
     const { email, name, picture } = data;
 
-    let user = await userModel.findOne({ email }).populate("colleges");
+    let user = await User.findOne({ email }).populate("colleges");
 
     if (!user) {
-      user = await userModel.create({
+      user = await User.create({
         name,
         email,
         image: picture,
@@ -67,7 +57,7 @@ exports.signup = async (req, res, next) => {
       throw Error("All fields are required!!!");
     }
 
-    const user = await userModel.findOne({ email });
+    const user = await User.findOne({ email });
 
     if (user) {
       return res.json({ message: "Already have an account." });
@@ -75,7 +65,7 @@ exports.signup = async (req, res, next) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const createdUser = await userModel.create({
+    const createdUser = await User.create({
       name,
       email,
       password: hashedPassword,
@@ -104,7 +94,7 @@ exports.login = async (req, res, next) => {
       throw Error("All fields are required!!!");
     }
 
-    const user = await userModel.findOne({ email });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ message: "Incorrect Email" });
