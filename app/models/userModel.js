@@ -10,6 +10,11 @@ const userSchema = new mongoose.Schema(
     dateOfBirth: { type: String },
     phoneNumber: { type: String },
     colleges: [{ type: mongoose.Schema.Types.ObjectId, ref: "College" }],
+    type: {
+      type: String,
+      enum: ["student", "admin", "collegeAdmin"],
+      required: true,
+    },
   },
   { timestamps: true }
 );

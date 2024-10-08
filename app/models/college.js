@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const collegeSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    image: { type: String, required: true },
+    image: { type: String },
     admissionDate: { type: String },
     events: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }],
     researches: [{ type: mongoose.Schema.Types.ObjectId, ref: "Research" }],
@@ -12,6 +12,7 @@ const collegeSchema = new mongoose.Schema(
     students: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     gallery: [{ type: mongoose.Schema.Types.ObjectId, ref: "Gallery" }],
     subjects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Subject" }],
+    admin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }
 );

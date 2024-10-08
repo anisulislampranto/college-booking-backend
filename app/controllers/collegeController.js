@@ -52,20 +52,24 @@ exports.getCollege = async (req, res, next) => {
 };
 
 exports.createCollege = async (req, res, next) => {
-  const { name, admissionDate, events, researches, sports, rating } = req.body;
-  const { path } = req.file;
+  const { name, email } = req.body;
+
+  console.log(req.body);
 
   try {
-    const createdCollege = await College.create({
-      rating,
-      sports,
-      researches,
-      events,
-      admissionDate,
-      name,
-      image: path,
-    });
-    res.json(createdCollege);
+    const createdCollege = await College.create(
+      {
+        name,
+        email,
+      },
+      { new: true }
+    );
+
+    console.log("createdCollege", createdCollege);
+
+    res
+      .status(201)
+      .json({ message: "College Created Successfully", data: createdCollege });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

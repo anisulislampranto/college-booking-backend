@@ -1,13 +1,8 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const { oauth2Client } = require("../utils/googleClient");
 const College = require("../models/college");
-const JWT_SECRET = process.env.JWT_SECRET;
-
-const createToken = (_id, email) => {
-  return jwt.sign({ _id, email }, JWT_SECRET, { expiresIn: "1d" });
-};
+const { createToken } = require("../utils/createToken");
 
 /* GET Google Authentication API. */
 exports.googleAuth = async (req, res, next) => {
@@ -60,7 +55,7 @@ exports.signup = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (user) {
-      return res.json({ message: "Already have an account." });
+      return res.status(403).json({ message: "Already have an account." });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
