@@ -12,7 +12,11 @@ const collegeSchema = new mongoose.Schema(
     students: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     gallery: [{ type: mongoose.Schema.Types.ObjectId, ref: "Gallery" }],
     subjects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Subject" }],
-    admin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    admin: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
   { timestamps: true }
 );

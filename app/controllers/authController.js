@@ -45,7 +45,7 @@ exports.googleAuth = async (req, res, next) => {
 };
 
 exports.signup = async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, type } = req.body;
 
   try {
     if (!name || !email || !password) {
@@ -61,6 +61,7 @@ exports.signup = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const createdUser = await User.create({
+      type,
       name,
       email,
       password: hashedPassword,

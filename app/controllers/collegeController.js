@@ -52,15 +52,15 @@ exports.getCollege = async (req, res, next) => {
 };
 
 exports.createCollege = async (req, res, next) => {
-  const { name, email } = req.body;
-
-  console.log(req.body);
+  const { name, admissionDate, admin } = req.body;
 
   try {
     const createdCollege = await College.create(
       {
         name,
-        email,
+        admissionDate,
+        admin,
+        ...(req?.file?.path && { image: req?.file?.path }),
       },
       { new: true }
     );

@@ -13,7 +13,6 @@ const userSchema = new mongoose.Schema(
     type: {
       type: String,
       enum: ["student", "admin", "collegeAdmin"],
-      required: true,
     },
   },
   { timestamps: true }
