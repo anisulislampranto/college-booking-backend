@@ -1,5 +1,29 @@
 const College = require("../models/college");
 
+exports.createCollege = async (req, res, next) => {
+  const { name, admissionDate, admin } = req.body;
+
+  console.log("admin", admin);
+  console.log("name", admin);
+
+  try {
+    const createdCollege = await College.create({
+      name,
+      admissionDate,
+      admin,
+      ...(req?.file?.path && { image: req?.file?.path }),
+    });
+
+    console.log("createdCollege", createdCollege);
+
+    res
+      .status(201)
+      .json({ message: "College Created Successfully", data: createdCollege });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 exports.getAllColleges = async (req, res, next) => {
   try {
     const { limit, search } = req.query;
@@ -46,30 +70,6 @@ exports.getCollege = async (req, res, next) => {
     }
 
     res.json(college);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-exports.createCollege = async (req, res, next) => {
-  const { name, admissionDate, admin } = req.body;
-
-  try {
-    const createdCollege = await College.create(
-      {
-        name,
-        admissionDate,
-        admin,
-        ...(req?.file?.path && { image: req?.file?.path }),
-      },
-      { new: true }
-    );
-
-    console.log("createdCollege", createdCollege);
-
-    res
-      .status(201)
-      .json({ message: "College Created Successfully", data: createdCollege });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

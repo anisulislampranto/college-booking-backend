@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const collegeSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    image: { type: String },
+    image: { type: String, required: true },
     admissionDate: { type: String },
     events: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }],
     researches: [{ type: mongoose.Schema.Types.ObjectId, ref: "Research" }],
