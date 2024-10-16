@@ -12,8 +12,6 @@ exports.createCollege = async (req, res, next) => {
       ...(req?.file?.path && { image: req?.file?.path }),
     });
 
-    console.log("createdCollege", createdCollege);
-
     await User.findByIdAndUpdate(
       admin,
       {
