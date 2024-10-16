@@ -1,4 +1,6 @@
 const Research = require("../models/research");
+const College = require("../models/college");
+const { ObjectId } = require("mongodb");
 
 exports.getResearches = async (req, res, next) => {
   try {
@@ -30,20 +32,29 @@ exports.getResearches = async (req, res, next) => {
 // };
 
 exports.createResearch = async (req, res, next) => {
-  const { name, description, college, participants } = req.body;
-
-  console.log("req.body", req.body);
+  const { user, name, description, college, participants } = req.body;
 
   try {
-    const createdResearch = await Research.create({
-      name,
-      description,
-      college,
-      participants,
-      ...(req?.file?.path && { image: req?.file?.path }),
-    });
+    const collegeData = await College.findOne({ _id: college });
 
-    console.log("createdResearch", createdResearch);
+    if (collegeData?.admin.equals(new ObjectId(user))) {
+      const createdResearch = await Research.create({
+        name,
+        description,
+        college,
+        participants,
+        ...(req?.file?.path && { image: req?.file?.path }),
+      });
+
+      res.status(201).json({
+        message: "Research Created Successfully",
+        data: createdResearch,
+      });
+    } else {
+      res.status(403).json({
+        message: "Only College Admin can do this operation",
+      });
+    }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
