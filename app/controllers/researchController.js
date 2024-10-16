@@ -29,19 +29,22 @@ exports.getResearches = async (req, res, next) => {
 //   }
 // };
 
-// exports.createResearch = async (req, res, next) => {
-//   const { name, description, college } = req.body;
+exports.createResearch = async (req, res, next) => {
+  const { name, description, college, participants } = req.body;
 
-//   try {
-//     const createdResearch = await Research.create({
-//       name,
-//       description,
-//       college,
-//       ...(req?.file?.path && { image: req?.file?.path }),
-//     });
+  console.log("req.body", req.body);
 
-//     res.json(createdResearch);
-//   } catch (error) {
-//     res.status(400).json({ error: error.message });
-//   }
-// };
+  try {
+    const createdResearch = await Research.create({
+      name,
+      description,
+      college,
+      participants,
+      ...(req?.file?.path && { image: req?.file?.path }),
+    });
+
+    console.log("createdResearch", createdResearch);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};

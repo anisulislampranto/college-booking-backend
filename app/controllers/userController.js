@@ -2,12 +2,19 @@ const User = require("../models/userModel");
 const College = require("../models/college");
 const bcrypt = require("bcrypt");
 
+exports.getUsers = async (req, res, next) => {
+  try {
+    const users = await User.find();
+
+    res.status(201).json({ message: "Fetched All Users", data: users });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 exports.updateUser = async (req, res, next) => {
   const { address, dateOfBirth, email, name, phoneNumber, college, imageLink } =
     req.body;
-
-  console.log("req.body", req.body);
-  console.log("req.params.id,", req.params.id);
 
   try {
     const updatedUser = await User.findByIdAndUpdate(

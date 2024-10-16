@@ -4,11 +4,13 @@ const {
   getMe,
   updateMe,
   updateUser,
+  getUsers,
 } = require("../controllers/userController");
+const { isLoggedIn } = require("../middlewares/isLoggedIn");
 
 const router = express.Router();
 
-// router.get("/:id", getUser);
+router.get("/", isLoggedIn, getUsers);
 router.post("/me/:id", getMe);
 router.patch("/update/:id", updateUser);
 router.patch("/update/me/:id", updateMe);
