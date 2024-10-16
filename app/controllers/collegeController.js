@@ -1,10 +1,8 @@
 const College = require("../models/college");
+const User = require("../models/userModel");
 
 exports.createCollege = async (req, res, next) => {
   const { name, admissionDate, admin } = req.body;
-
-  console.log("admin", admin);
-  console.log("name", admin);
 
   try {
     const createdCollege = await College.create({
@@ -15,6 +13,14 @@ exports.createCollege = async (req, res, next) => {
     });
 
     console.log("createdCollege", createdCollege);
+
+    await User.findByIdAndUpdate(
+      admin,
+      {
+        $addToSet: { colleges: createdCollege._id },
+      },
+      { new: true, runValidators: true }
+    );
 
     res
       .status(201)
