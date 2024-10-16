@@ -1,4 +1,6 @@
 const Sport = require("../models/sport");
+const College = require("../models/college");
+const { ObjectId } = require("mongodb");
 
 exports.getSports = async (req, res, next) => {
   try {
@@ -26,17 +28,42 @@ exports.getSport = async (req, res, next) => {
 };
 
 exports.createSport = async (req, res, next) => {
-  const { name, description } = req.body;
+  const { user, name, description, college } = req.body;
   const { path } = req.file;
 
-  try {
-    const createdEvent = await Sport.create({
-      name,
-      description,
-      image: path,
-    });
+  if (!user) {
+    res.status(403).json({ message: "You Are not allowed to create Event" });
+  }
 
-    res.json(createdEvent);
+  try {
+    const collegeData = await College.findOne({ _id: college });
+
+    if (collegeData.admin.equals(new ObjectId(user))) {
+      const createdSport = await Sport.create({
+        name,
+        description,
+        college,
+        image: path,
+      });
+
+      const updatedCollegeWithEvent = await College.findByIdAndUpdate(
+        college,
+        {
+          $addToSet: { sports: createdSport._id },
+        },
+        { new: true }
+      );
+
+      console.log("updatedCollegeWithEvent", updatedCollegeWithEvent);
+
+      res
+        .status(201)
+        .json({ message: "Sport Created Successfully", data: createdSport });
+    } else {
+      res.status(403).json({
+        message: "Only College Admin can create event for the college",
+      });
+    }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

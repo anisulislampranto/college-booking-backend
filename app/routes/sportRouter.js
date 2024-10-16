@@ -2,16 +2,16 @@ const express = require("express");
 const {
   getSports,
   getSport,
-  // createSport,
+  createSport,
   // updateSport,
 } = require("../controllers/sportController");
-// const upload = require("../config/multerConfig");
+const upload = require("../config/multerconfig");
 
 const router = express.Router();
 
 router.get("/", getSports);
 router.get("/:id", getSport);
-// router.post("/create", upload.single("image"), createSport);
+router.post("/create", upload.single("image"), createSport);
 // router.patch("/update/:id", upload.single("image"), updateSport);
 
 module.exports = router;
