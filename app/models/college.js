@@ -9,7 +9,17 @@ const collegeSchema = new mongoose.Schema(
     researches: [{ type: mongoose.Schema.Types.ObjectId, ref: "Research" }],
     sports: [{ type: mongoose.Schema.Types.ObjectId, ref: "Sport" }],
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
-    students: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    students: [
+      {
+        subject: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Subject",
+          required: true,
+        },
+        student: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      },
+      ,
+    ],
     gallery: [{ type: mongoose.Schema.Types.ObjectId, ref: "Gallery" }],
     subjects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Subject" }],
     admin: {

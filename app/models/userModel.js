@@ -9,7 +9,20 @@ const userSchema = new mongoose.Schema(
     address: { type: String },
     dateOfBirth: { type: String },
     phoneNumber: { type: String },
-    colleges: [{ type: mongoose.Schema.Types.ObjectId, ref: "College" }],
+    colleges: [
+      {
+        subject: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Subject",
+          required: true,
+        },
+        college: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "College",
+          required: true,
+        },
+      },
+    ],
     type: {
       type: String,
       enum: ["student", "admin", "collegeAdmin"],

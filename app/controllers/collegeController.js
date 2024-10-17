@@ -4,6 +4,8 @@ const User = require("../models/userModel");
 exports.createCollege = async (req, res, next) => {
   const { name, admissionDate, admin } = req.body;
 
+  console.log("admin", admin);
+
   try {
     const today = new Date();
     const selectedDate = new Date(admissionDate);
@@ -11,24 +13,30 @@ exports.createCollege = async (req, res, next) => {
       throw Error("Admission date cannot be in the past");
     }
 
-    const createdCollege = await College.create({
-      name,
-      admissionDate,
-      admin,
-      ...(req?.file?.path && { image: req?.file?.path }),
-    });
-
-    await User.findByIdAndUpdate(
-      admin,
-      {
-        $addToSet: { colleges: createdCollege._id },
-      },
-      { new: true, runValidators: true }
+    const adminWithColleges = await User.findOne({ _id: admin }).populate(
+      "colleges"
     );
 
-    res
-      .status(201)
-      .json({ message: "College Created Successfully", data: createdCollege });
+    console.log("adminWithColleges", adminWithColleges);
+
+    // const createdCollege = await College.create({
+    //   name,
+    //   admissionDate,
+    //   admin,
+    //   ...(req?.file?.path && { image: req?.file?.path }),
+    // });
+
+    // await User.findByIdAndUpdate(
+    //   admin,
+    //   {
+    //     $addToSet: { colleges: createdCollege._id },
+    //   },
+    //   { new: true, runValidators: true }
+    // );
+
+    // res
+    //   .status(201)
+    //   .json({ message: "College Created Successfully", data: createdCollege });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -51,6 +59,7 @@ exports.getAllColleges = async (req, res, next) => {
       .populate("events")
       .populate("researches")
       .populate("sports")
+      .populate("students")
       .limit(limit ? parseInt(limit) : null); // Limit the number of results if 'limit' is provided
 
     res.status(200).json({

@@ -13,7 +13,7 @@ exports.getUsers = async (req, res, next) => {
 };
 
 exports.updateUser = async (req, res, next) => {
-  const { address, dateOfBirth, email, name, phoneNumber, college, imageLink } =
+  const { address, dateOfBirth, email, name, phoneNumber, college, subject } =
     req.body;
 
   try {
@@ -25,21 +25,42 @@ exports.updateUser = async (req, res, next) => {
         email,
         name,
         phoneNumber,
-        $addToSet: { colleges: college },
-        imageLink,
+        $addToSet: {
+          colleges: {
+            subject: subject,
+            college: college,
+          },
+        },
+        ...(req?.file?.path && { image: req?.file?.path }),
       },
       { new: true, runValidators: true }
-    ).populate("colleges");
+    )
+      .populate({
+        path: "colleges.college",
+        model: "College",
+      })
+      .populate({
+        path: "colleges.subject",
+        model: "Subject",
+      });
+    console.log("updatedUser", updatedUser);
 
     const updatedCollege = await College.findByIdAndUpdate(
       college,
       {
-        $addToSet: { students: updatedUser._id },
+        $addToSet: {
+          students: {
+            subject: subject,
+            student: updatedUser._id,
+          },
+        },
       },
       { new: true, runValidators: true }
     );
 
-    res.json(updatedUser);
+    console.log("updatedCollege", updatedCollege);
+
+    res.json({ data: updatedUser });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

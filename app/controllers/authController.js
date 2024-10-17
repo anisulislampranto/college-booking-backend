@@ -102,7 +102,23 @@ exports.login = async (req, res, next) => {
       throw Error("Incorrect password");
     }
 
-    const colleges = await College.find({ students: user._id });
+    let colleges;
+
+    if (user.type === "student") {
+      colleges = await College.find({ students: user._id })
+        .populate("events")
+        .populate("researches")
+        .populate("sports")
+        .populate("students");
+    }
+
+    if (user.type === "collegeAdmin") {
+      colleges = await College.find({ admin: user._id })
+        .populate("events")
+        .populate("researches")
+        .populate("sports")
+        .populate("students");
+    }
 
     const token = createToken(user._id, user.email);
 
@@ -110,6 +126,7 @@ exports.login = async (req, res, next) => {
       _id: user.id,
       email: user.email,
       name: user.name,
+      type: user.type,
       colleges,
       token,
     };
