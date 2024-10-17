@@ -46,6 +46,16 @@ exports.createResearch = async (req, res, next) => {
         ...(req?.file?.path && { image: req?.file?.path }),
       });
 
+      const updatedCollegeWithEvent = await College.findByIdAndUpdate(
+        college,
+        {
+          $addToSet: { researches: createdResearch._id },
+        },
+        { new: true }
+      );
+
+      console.log("updatedCollegeWithEvent", updatedCollegeWithEvent);
+
       res.status(201).json({
         message: "Research Created Successfully",
         data: createdResearch,

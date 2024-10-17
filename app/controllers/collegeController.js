@@ -5,6 +5,12 @@ exports.createCollege = async (req, res, next) => {
   const { name, admissionDate, admin } = req.body;
 
   try {
+    const today = new Date();
+    const selectedDate = new Date(admissionDate);
+    if (selectedDate < today.setHours(0, 0, 0, 0)) {
+      throw Error("Admission date cannot be in the past");
+    }
+
     const createdCollege = await College.create({
       name,
       admissionDate,
