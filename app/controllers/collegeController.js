@@ -44,7 +44,7 @@ exports.createCollege = async (req, res, next) => {
 
 exports.getAllColleges = async (req, res, next) => {
   try {
-    const { limit, search } = req.query;
+    const { limit, page, search } = req.query;
 
     // Build the query object
     let query = {};
@@ -54,17 +54,27 @@ exports.getAllColleges = async (req, res, next) => {
       query.name = { $regex: search, $options: "i" }; // Case-insensitive search
     }
 
-    // Perform the database query with optional search and populate related fields
+    const limitValue = limit ? parseInt(limit) : 10;
+    const pageValue = page ? parseInt(page) : 1;
+    const skip = (pageValue - 1) * limitValue;
+
     const colleges = await College.find(query)
       .populate("events")
       .populate("researches")
       .populate("sports")
       .populate("students")
-      .limit(limit ? parseInt(limit) : null); // Limit the number of results if 'limit' is provided
+      .sort({ admissionDate: 1 })
+      .skip(skip)
+      .limit(limitValue);
+
+    const totalColleges = await College.countDocuments(query);
 
     res.status(200).json({
       status: "success",
       colleges,
+      totalColleges,
+      totalPages: Math.ceil(totalColleges / limitValue),
+      currentPage: pageValue,
     });
   } catch (error) {
     res.status(400).json({
