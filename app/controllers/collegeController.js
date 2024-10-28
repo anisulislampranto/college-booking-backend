@@ -98,7 +98,15 @@ exports.getCollege = async (req, res, next) => {
     })
       .populate("events")
       .populate("researches")
-      .populate("sports");
+      .populate("sports")
+      .populate({
+        path: "students.student",
+        model: "User",
+      })
+      .populate({
+        path: "students.subject",
+        model: "Subject",
+      });
 
     if (!college) {
       return res.status(404).json({ error: "College not found" });

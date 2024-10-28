@@ -30,7 +30,7 @@ exports.googleAuth = async (req, res, next) => {
       });
     }
 
-    const token = createToken(user._id);
+    const token = createToken(user._id, user.email);
 
     res.cookie("token", token).status(200).json({
       message: "success",

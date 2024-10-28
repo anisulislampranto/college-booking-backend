@@ -4,7 +4,12 @@ const { ObjectId } = require("mongodb");
 
 exports.getResearches = async (req, res, next) => {
   try {
-    const researches = await Research.find();
+    const researches = await Research.find()
+      .populate("participants")
+      .populate("college");
+
+    console.log("researches", researches);
+
     res.status(201).json({
       status: "success",
       researches,
