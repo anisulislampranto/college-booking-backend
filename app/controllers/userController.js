@@ -20,10 +20,10 @@ exports.updateUser = async (req, res, next) => {
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       {
+        name,
+        email,
         address,
         dateOfBirth,
-        email,
-        name,
         phoneNumber,
         $addToSet: {
           colleges: {
@@ -43,6 +43,7 @@ exports.updateUser = async (req, res, next) => {
         path: "colleges.subject",
         model: "Subject",
       });
+
     console.log("updatedUser", updatedUser);
 
     const updatedCollege = await College.findByIdAndUpdate(
@@ -67,7 +68,9 @@ exports.updateUser = async (req, res, next) => {
 };
 
 exports.updateMe = async (req, res, next) => {
-  const { name, address, password } = req.body;
+  const { name, address, password, dateOfBirth, phoneNumber } = req.body;
+
+  console.log("req.body", req.body);
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -77,19 +80,32 @@ exports.updateMe = async (req, res, next) => {
       {
         name,
         address,
+        phoneNumber,
+        dateOfBirth,
         password: hashedPassword,
       },
-      { new: true, runValidators: true }
-    );
+      { new: true }
+    ).populate({
+      path: "colleges.college",
+      model: "College",
+      populate: [
+        { path: "events", model: "Event" },
+        { path: "researches", model: "Research" },
+        { path: "sports", model: "Sport" },
+      ],
+    });
 
     if (!this.updateUser) {
       return res.status(404).json({ error: "College not found" });
     }
 
+    console.log("updatedUser", updatedUser);
+
     const userResponse = { ...updatedUser._doc };
+
     delete userResponse.password;
 
-    res.json(userResponse);
+    res.json({ data: userResponse });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -105,7 +121,7 @@ exports.getMe = async (req, res, next) => {
 
     console.log("user", user);
 
-    res.json(user);
+    res.json({ data: user });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

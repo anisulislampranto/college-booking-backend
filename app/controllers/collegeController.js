@@ -19,24 +19,30 @@ exports.createCollege = async (req, res, next) => {
 
     console.log("adminWithColleges", adminWithColleges);
 
-    // const createdCollege = await College.create({
-    //   name,
-    //   admissionDate,
-    //   admin,
-    //   ...(req?.file?.path && { image: req?.file?.path }),
-    // });
+    const createdCollege = await College.create({
+      name,
+      admissionDate,
+      admin,
+      ...(req?.file?.path && { image: req?.file?.path }),
+    });
 
-    // await User.findByIdAndUpdate(
-    //   admin,
-    //   {
-    //     $addToSet: { colleges: createdCollege._id },
-    //   },
-    //   { new: true, runValidators: true }
-    // );
+    const updatedUser = await User.findByIdAndUpdate(
+      admin,
+      {
+        $addToSet: {
+          colleges: {
+            college: createdCollege._id,
+          },
+        },
+      },
+      { new: true }
+    );
 
-    // res
-    //   .status(201)
-    //   .json({ message: "College Created Successfully", data: createdCollege });
+    console.log("updatedUser", updatedUser);
+
+    res
+      .status(201)
+      .json({ message: "College Created Successfully", data: createdCollege });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -131,5 +137,21 @@ exports.updateCollege = async (req, res, next) => {
     res.json(updatedCollege);
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+};
+
+exports.deleteColleges = async (req, res, next) => {
+  try {
+    const result = await College.deleteMany({});
+
+    res.status(200).json({
+      status: "success",
+      message: `${result.deletedCount} colleges deleted successfully.`,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error.message,
+    });
   }
 };

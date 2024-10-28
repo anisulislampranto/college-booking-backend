@@ -69,3 +69,19 @@ exports.createResearch = async (req, res, next) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+exports.deleteResearches = async (req, res, next) => {
+  try {
+    const result = await Research.deleteMany({});
+
+    res.status(200).json({
+      status: "success",
+      message: `${result.deletedCount} Researches deleted successfully.`,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};

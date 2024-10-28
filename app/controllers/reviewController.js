@@ -50,3 +50,19 @@ exports.createReview = async (req, res, next) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+exports.deleteReviews = async (req, res, next) => {
+  try {
+    const result = await Review.deleteMany({});
+
+    res.status(200).json({
+      status: "success",
+      message: `${result.deletedCount} Reviews deleted successfully.`,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};

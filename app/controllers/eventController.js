@@ -69,3 +69,19 @@ exports.createEvent = async (req, res, next) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+exports.deleteEvents = async (req, res, next) => {
+  try {
+    const result = await Event.deleteMany({});
+
+    res.status(200).json({
+      status: "success",
+      message: `${result.deletedCount} Events deleted successfully.`,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};
