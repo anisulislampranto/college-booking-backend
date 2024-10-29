@@ -7,6 +7,9 @@ const { createToken } = require("../utils/createToken");
 /* GET Google Authentication API. */
 exports.googleAuth = async (req, res, next) => {
   const code = req.query.code;
+  const type = req.query.type;
+
+  console.log("type", type);
 
   try {
     const googleRes = await oauth2Client.getToken(code);
@@ -22,33 +25,33 @@ exports.googleAuth = async (req, res, next) => {
 
     const { email, name, picture } = data;
 
-    const user = await User.findOne({ email }).populate("colleges");
+    let user = await User.findOne({ email }).populate("colleges");
 
     console.log("user", user);
 
+    // If user does not exist, create a new user
     if (!user) {
       console.log("createdUser");
 
-      const createdUser = await User.create({
-        name: "name",
-        email: "email@email.com",
-        image: "picture",
+      user = await User.create({
+        type,
+        name,
+        email,
+        image: picture,
       });
 
-      console.log("createdUser", createdUser);
+      console.log("createdUser", user);
     }
 
     const token = createToken(user._id, user.email);
 
-    res
-      .cookie("token", token)
-      .status(200)
-      .json({
-        message: "success",
-        token,
-        user: user ? user : createdUser,
-      });
+    res.cookie("token", token).status(200).json({
+      message: "success",
+      token,
+      user,
+    });
   } catch (err) {
+    console.error(err);
     res.status(500).json({
       message: "Internal Server Error",
     });
