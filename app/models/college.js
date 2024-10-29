@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 const collegeSchema = new mongoose.Schema(
   {
+    status: {
+      type: String,
+      enum: ["approved", "pending"],
+      required: true,
+      default: "pending",
+    },
     name: { type: String, required: true },
     image: { type: String, required: true },
     admissionDate: { type: String },

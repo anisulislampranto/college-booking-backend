@@ -50,7 +50,7 @@ exports.createCollege = async (req, res, next) => {
 
 exports.getAllColleges = async (req, res, next) => {
   try {
-    const { limit, page, search } = req.query;
+    const { limit, page, search, status } = req.query;
 
     // Build the query object
     let query = {};
@@ -58,6 +58,10 @@ exports.getAllColleges = async (req, res, next) => {
     // If search query exists, perform a case-insensitive search on the 'name' field
     if (search) {
       query.name = { $regex: search, $options: "i" }; // Case-insensitive search
+    }
+
+    if (status) {
+      query.status = status;
     }
 
     const limitValue = limit ? parseInt(limit) : 10;
@@ -155,6 +159,32 @@ exports.deleteColleges = async (req, res, next) => {
     res.status(200).json({
       status: "success",
       message: `${result.deletedCount} colleges deleted successfully.`,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};
+
+exports.deleteCollege = async (req, res, next) => {
+  console.log("req.params", req.params);
+
+  try {
+    const { id } = req.params;
+    const result = await College.findByIdAndDelete(id);
+
+    if (!result) {
+      return res.status(404).json({
+        status: "fail",
+        message: "College not found.",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "College deleted successfully.",
     });
   } catch (error) {
     res.status(400).json({
