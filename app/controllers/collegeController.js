@@ -193,3 +193,33 @@ exports.deleteCollege = async (req, res, next) => {
     });
   }
 };
+
+exports.approveCollege = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const result = await College.findByIdAndUpdate(
+      id,
+      { status: "approved" },
+      { new: true }
+    );
+
+    if (!result) {
+      return res.status(404).json({
+        status: "fail",
+        message: "College not found.",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "College approved successfully.",
+      data: result,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};

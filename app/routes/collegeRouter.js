@@ -5,6 +5,7 @@ const {
   getCollege,
   deleteColleges,
   deleteCollege,
+  approveCollege,
   // updateCollege,
 } = require("../controllers/collegeController");
 const upload = require("../config/multerconfig");
@@ -16,6 +17,7 @@ const router = express.Router();
 router.get("/", getAllColleges);
 router.get("/delete", deleteColleges);
 router.delete("/delete/:id", isLoggedIn, isAdmin, deleteCollege);
+router.patch("/approve/:id", isLoggedIn, isAdmin, approveCollege);
 router.get("/:id", getCollege);
 router.post("/create", isLoggedIn, upload.single("image"), createCollege);
 // router.patch("/update/:id", upload.single("image"), updateCollege);
