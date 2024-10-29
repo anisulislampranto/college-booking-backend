@@ -29,11 +29,7 @@ exports.googleAuth = async (req, res, next) => {
       .populate({
         path: "colleges.college",
         model: "College",
-        populate: [
-          { path: "events", model: "Event" },
-          { path: "researches", model: "Research" },
-          { path: "sports", model: "Sport" },
-        ],
+        populate,
       })
       .populate({
         path: "colleges.subject",
