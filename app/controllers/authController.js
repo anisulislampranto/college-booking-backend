@@ -25,7 +25,20 @@ exports.googleAuth = async (req, res, next) => {
 
     const { email, name, picture } = data;
 
-    let user = await User.findOne({ email }).populate("colleges");
+    let user = await User.findOne({ email })
+      .populate({
+        path: "colleges.college",
+        model: "College",
+        populate: [
+          { path: "events", model: "Event" },
+          { path: "researches", model: "Research" },
+          { path: "sports", model: "Sport" },
+        ],
+      })
+      .populate({
+        path: "colleges.subject",
+        model: "Subject",
+      });
 
     console.log("user", user);
 
