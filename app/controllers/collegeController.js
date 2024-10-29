@@ -53,7 +53,9 @@ exports.getAllColleges = async (req, res, next) => {
     const { limit, page, search, status } = req.query;
 
     // Build the query object
-    let query = {};
+    let query = {
+      isDeleted: false,
+    };
 
     // If search query exists, perform a case-insensitive search on the 'name' field
     if (search) {
@@ -168,23 +170,26 @@ exports.deleteColleges = async (req, res, next) => {
   }
 };
 
-exports.deleteCollege = async (req, res, next) => {
-  console.log("req.params", req.params);
-
+exports.deleteCollege = async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await College.findByIdAndDelete(id);
 
-    if (!result) {
+    const college = await College.findById(id);
+    if (!college) {
       return res.status(404).json({
         status: "fail",
         message: "College not found.",
       });
     }
 
+    // Move college to recycle bin
+    college.isDeleted = true;
+    college.deletedAt = new Date();
+    await college.save();
+
     res.status(200).json({
       status: "success",
-      message: "College deleted successfully.",
+      message: "College moved to recycle bin.",
     });
   } catch (error) {
     res.status(400).json({
@@ -215,6 +220,49 @@ exports.approveCollege = async (req, res, next) => {
       status: "success",
       message: "College approved successfully.",
       data: result,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};
+
+exports.deletedColleges = async (req, res, next) => {
+  try {
+    const deletedColleges = await College.find({ isDeleted: true });
+    res.status(200).json({
+      status: "success",
+      data: deletedColleges,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};
+
+exports.restoreCollege = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const college = await College.findById(id);
+    if (!college || !college.isDeleted) {
+      return res.status(404).json({
+        status: "fail",
+        message: "College not found or is not in the recycle bin.",
+      });
+    }
+
+    college.isDeleted = false;
+    college.deletedAt = null;
+    await college.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "College restored successfully.",
     });
   } catch (error) {
     res.status(400).json({

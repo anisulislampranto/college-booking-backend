@@ -15,6 +15,16 @@ const collegeSchema = new mongoose.Schema(
     researches: [{ type: mongoose.Schema.Types.ObjectId, ref: "Research" }],
     sports: [{ type: mongoose.Schema.Types.ObjectId, ref: "Sport" }],
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
+
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
+
     students: [
       {
         subject: {
