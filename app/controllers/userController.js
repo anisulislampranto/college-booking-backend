@@ -3,10 +3,20 @@ const College = require("../models/college");
 const bcrypt = require("bcrypt");
 
 exports.getUsers = async (req, res, next) => {
-  try {
-    const users = await User.find();
+  const { collegeId } = req.query;
 
-    res.status(201).json({ message: "Fetched All Users", data: users });
+  try {
+    let users;
+
+    if (collegeId) {
+      users = await User.find({
+        colleges: { $elemMatch: { college: collegeId } },
+      });
+    } else {
+      users = await User.find();
+    }
+
+    res.status(200).json({ message: "Fetched Users", data: users });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
