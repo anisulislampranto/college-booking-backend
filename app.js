@@ -19,8 +19,15 @@ const userRouter = require("./app/routes/userRouter");
 const mongoose = require("mongoose");
 
 // middleware
-app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+app.use(
+  cors({
+    origin: "https://college-booking-frontend.vercel.app",
+    credentials: true,
+  })
+);
 app.use(express.json());
+
+console.log("cors", process.env.FRONTEND_URL);
 
 // routes
 app.use("/api/researches", researchRouter);
