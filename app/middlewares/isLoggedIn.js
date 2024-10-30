@@ -8,8 +8,6 @@ exports.isLoggedIn = async (req, res, next) => {
     return res.status(401).json({ message: "Authorization Failed !!" });
   }
 
-  console.log("authorization", authorization);
-
   const token = authorization.split(" ")[1];
 
   try {

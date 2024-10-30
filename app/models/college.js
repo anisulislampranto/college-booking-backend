@@ -4,7 +4,7 @@ const collegeSchema = new mongoose.Schema(
   {
     status: {
       type: String,
-      enum: ["approved", "pending"],
+      enum: ["approved", "pending", "deleted"],
       required: true,
       default: "pending",
     },

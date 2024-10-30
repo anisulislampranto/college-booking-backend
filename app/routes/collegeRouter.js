@@ -21,7 +21,7 @@ router.get("/", getAllColleges);
 router.patch("/my-college", isLoggedIn, myColleges);
 router.get("/delete", deleteColleges);
 router.delete("/delete/:id", isLoggedIn, isAdmin, deleteCollege);
-router.get("/recycle-bin", isLoggedIn, isAdmin, deletedColleges);
+router.get("/recycle-bin", isLoggedIn, deletedColleges);
 router.post("/restore/:id", isLoggedIn, isAdmin, restoreCollege);
 router.patch("/approve/:id", isLoggedIn, isAdmin, approveCollege);
 router.get("/:id", getCollege);

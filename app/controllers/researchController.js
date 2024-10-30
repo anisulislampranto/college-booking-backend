@@ -8,8 +8,6 @@ exports.getResearches = async (req, res, next) => {
       .populate("participants")
       .populate("college");
 
-    console.log("researches", researches);
-
     res.status(201).json({
       status: "success",
       researches,

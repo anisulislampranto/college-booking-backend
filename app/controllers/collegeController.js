@@ -52,6 +52,8 @@ exports.getAllColleges = async (req, res, next) => {
   try {
     const { limit, page, search, status } = req.query;
 
+    console.log("status", status);
+
     // Build the query object
     let query = {
       isDeleted: false,
@@ -185,6 +187,7 @@ exports.deleteCollege = async (req, res) => {
     // Move college to recycle bin
     college.isDeleted = true;
     college.deletedAt = new Date();
+    college.status = "deleted";
     await college.save();
 
     res.status(200).json({
@@ -230,8 +233,13 @@ exports.approveCollege = async (req, res, next) => {
 };
 
 exports.deletedColleges = async (req, res, next) => {
+  console.log("console");
+
   try {
     const deletedColleges = await College.find({ isDeleted: true });
+
+    console.log("deleted", deletedColleges);
+
     res.status(200).json({
       status: "success",
       data: deletedColleges,
@@ -258,6 +266,7 @@ exports.restoreCollege = async (req, res, next) => {
 
     college.isDeleted = false;
     college.deletedAt = null;
+    college.status = "pending";
     await college.save();
 
     res.status(200).json({
