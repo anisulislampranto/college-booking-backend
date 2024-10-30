@@ -271,3 +271,28 @@ exports.restoreCollege = async (req, res, next) => {
     });
   }
 };
+
+exports.myColleges = async (req, res, next) => {
+  // const { collegeIds } = req.body;
+  console.log("req.body", req.body);
+
+  try {
+    // const colleges = await College.find({ _id: { $in: collegeIds } })
+    //   .populate("events")
+    //   .populate("researches")
+    //   .populate("sports")
+    //   .populate({
+    //     path: "students.student",
+    //     model: "User",
+    //   })
+    //   .populate({
+    //     path: "students.subject",
+    //     model: "Subject",
+    //   });
+    // console.log("colleges", colleges);
+    // res.status(200).json({ data: colleges });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};

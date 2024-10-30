@@ -85,3 +85,26 @@ exports.deleteEvents = async (req, res, next) => {
     });
   }
 };
+
+exports.deleteEvent = async (req, res, next) => {
+  try {
+    const result = await Event.findByIdAndDelete(req.params.id);
+
+    if (!result) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Event not found.",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Event deleted successfully.",
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};
