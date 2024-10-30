@@ -2,6 +2,37 @@ const User = require("../models/userModel");
 const College = require("../models/college");
 const bcrypt = require("bcrypt");
 
+exports.getMe = async (req, res, next) => {
+  try {
+    // Assuming your authentication middleware sets req.user with the authenticated user
+    const userId = req.user._id; // or however you access the user ID
+    const user = await User.findById(userId)
+      .select("-password")
+      .populate({
+        path: "colleges.college",
+        model: "College",
+        populate: [
+          { path: "events", model: "Event" },
+          { path: "researches", model: "Research" },
+          { path: "sports", model: "Sport" },
+        ],
+      })
+      .populate({
+        path: "colleges.subject",
+        model: "Subject",
+      });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ data: user });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 exports.getUsers = async (req, res, next) => {
   const { collegeId } = req.query;
 
@@ -126,18 +157,18 @@ exports.updateMe = async (req, res, next) => {
   }
 };
 
-exports.getMe = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.params.id).populate("Colleges");
+// exports.getMe = async (req, res, next) => {
+//   try {
+//     const user = await User.findById(req.params.id).populate("Colleges");
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
 
-    console.log("user", user);
+//     console.log("user", user);
 
-    res.json({ data: user });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+//     res.json({ data: user });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };

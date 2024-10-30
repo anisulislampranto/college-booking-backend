@@ -11,6 +11,7 @@ const upload = require("../config/multerconfig");
 const router = express.Router();
 
 router.get("/", isLoggedIn, getUsers);
+router.get("/get-me", isLoggedIn, getMe);
 router.post("/me/:id", getMe);
 router.patch("/update/:id", upload.single("image"), updateUser);
 router.patch("/update/me/:id", updateMe);
