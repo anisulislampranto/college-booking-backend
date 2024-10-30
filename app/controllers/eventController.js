@@ -35,10 +35,14 @@ exports.createEvent = async (req, res, next) => {
     res.status(403).json({ message: "You Are not allowed to create Event" });
   }
 
+  console.log("college", college);
+
   try {
     const collegeData = await College.findOne({ _id: college });
 
-    if (collegeData.admin.equals(new ObjectId(user))) {
+    console.log("college.data", collegeData);
+
+    if (collegeData?.admin.equals(new ObjectId(user))) {
       const createdEvent = await Event.create({
         name,
         date,
