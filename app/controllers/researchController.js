@@ -88,3 +88,26 @@ exports.deleteResearches = async (req, res, next) => {
     });
   }
 };
+
+exports.deleteResearch = async (req, res, next) => {
+  try {
+    const result = await Research.findByIdAndDelete(req.params.id);
+
+    if (!result) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Research not found.",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Research deleted successfully.",
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};

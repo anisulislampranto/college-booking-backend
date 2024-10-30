@@ -93,3 +93,26 @@ exports.updateSport = async (req, res, next) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+exports.deleteSport = async (req, res, next) => {
+  try {
+    const result = await Sport.findByIdAndDelete(req.params.id);
+
+    if (!result) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Research not found.",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Research deleted successfully.",
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};
