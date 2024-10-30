@@ -9,8 +9,6 @@ exports.googleAuth = async (req, res, next) => {
   const code = req.query.code;
   const type = req.query.type;
 
-  console.log("type", type);
-
   try {
     const googleRes = await oauth2Client.getToken(code);
 
@@ -20,8 +18,6 @@ exports.googleAuth = async (req, res, next) => {
       `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
     );
     const data = await userRes.json();
-
-    console.log("GData", data);
 
     const { email, name, picture } = data;
 
@@ -40,12 +36,8 @@ exports.googleAuth = async (req, res, next) => {
         model: "Subject",
       });
 
-    console.log("user", user);
-
     // If user does not exist, create a new user
     if (!user) {
-      console.log("createdUser");
-
       user = await User.create({
         type,
         name,

@@ -54,8 +54,6 @@ exports.createSport = async (req, res, next) => {
         { new: true }
       );
 
-      console.log("updatedCollegeWithEvent", updatedCollegeWithEvent);
-
       res
         .status(201)
         .json({ message: "Sport Created Successfully", data: createdSport });

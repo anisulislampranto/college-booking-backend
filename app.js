@@ -24,8 +24,6 @@ const College = require("./app/models/college"); // Model for scheduled deletion
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(express.json());
 
-console.log("cors", process.env.FRONTEND_URL);
-
 // routes
 app.use("/api/researches", researchRouter);
 app.use("/api/colleges", collegeRouter);

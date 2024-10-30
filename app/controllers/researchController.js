@@ -57,8 +57,6 @@ exports.createResearch = async (req, res, next) => {
         { new: true }
       );
 
-      console.log("updatedCollegeWithEvent", updatedCollegeWithEvent);
-
       res.status(201).json({
         message: "Research Created Successfully",
         data: createdResearch,

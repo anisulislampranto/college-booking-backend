@@ -24,7 +24,6 @@ const collegeSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
-
     students: [
       {
         subject: {
@@ -33,6 +32,12 @@ const collegeSchema = new mongoose.Schema(
           required: true,
         },
         student: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        status: {
+          type: String,
+          enum: ["approved", "admissionPending", "rejected"],
+          required: true,
+          default: "admissionPending",
+        },
       },
       ,
     ],

@@ -90,8 +90,6 @@ exports.updateUser = async (req, res, next) => {
         model: "Subject",
       });
 
-    console.log("updatedUser", updatedUser);
-
     const updatedCollege = await College.findByIdAndUpdate(
       college,
       {
@@ -105,8 +103,6 @@ exports.updateUser = async (req, res, next) => {
       { new: true, runValidators: true }
     );
 
-    console.log("updatedCollege", updatedCollege);
-
     res.json({ data: updatedUser });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -115,8 +111,6 @@ exports.updateUser = async (req, res, next) => {
 
 exports.updateMe = async (req, res, next) => {
   const { name, address, password, dateOfBirth, phoneNumber } = req.body;
-
-  console.log("req.body", req.body);
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -144,8 +138,6 @@ exports.updateMe = async (req, res, next) => {
     if (!this.updateUser) {
       return res.status(404).json({ error: "College not found" });
     }
-
-    console.log("updatedUser", updatedUser);
 
     const userResponse = { ...updatedUser._doc };
 

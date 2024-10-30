@@ -4,8 +4,6 @@ const User = require("../models/userModel");
 exports.createCollege = async (req, res, next) => {
   const { name, admissionDate, admin } = req.body;
 
-  console.log("admin", admin);
-
   try {
     const today = new Date();
     const selectedDate = new Date(admissionDate);
@@ -16,8 +14,6 @@ exports.createCollege = async (req, res, next) => {
     const adminWithColleges = await User.findOne({ _id: admin }).populate(
       "colleges"
     );
-
-    console.log("adminWithColleges", adminWithColleges);
 
     const createdCollege = await College.create({
       name,
@@ -38,8 +34,6 @@ exports.createCollege = async (req, res, next) => {
       { new: true }
     );
 
-    console.log("updatedUser", updatedUser);
-
     res
       .status(201)
       .json({ message: "College Created Successfully", data: createdCollege });
@@ -51,8 +45,6 @@ exports.createCollege = async (req, res, next) => {
 exports.getAllColleges = async (req, res, next) => {
   try {
     const { limit, page, search, status } = req.query;
-
-    console.log("status", status);
 
     // Build the query object
     let query = {
@@ -233,12 +225,8 @@ exports.approveCollege = async (req, res, next) => {
 };
 
 exports.deletedColleges = async (req, res, next) => {
-  console.log("console");
-
   try {
     const deletedColleges = await College.find({ isDeleted: true });
-
-    console.log("deleted", deletedColleges);
 
     res.status(200).json({
       status: "success",
@@ -303,5 +291,72 @@ exports.myColleges = async (req, res, next) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
+  }
+};
+
+exports.getCollegeStudents = async (req, res, next) => {
+  const { collegeId, status } = req.query;
+
+  try {
+    // Find the college and populate the students field
+    const college = await College.findById(collegeId)
+      .populate({
+        path: "students.student",
+        model: "User",
+      })
+      .populate({
+        path: "students.subject",
+        model: "Subject",
+      });
+
+    // console.log("college", college);
+
+    if (!college) {
+      return res.status(404).json({ message: "College not found" });
+    }
+
+    // Filter students by status if provided
+    const students = college.students.filter((studentObj) => {
+      return status ? studentObj.status === status : true;
+    });
+
+    res.status(200).json({ message: "Fetched Students", data: students });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.approveStudent = async (req, res, next) => {
+  const { studentId } = req.params;
+  const { collegeId } = req.body;
+
+  try {
+    const college = await College.findOneAndUpdate(
+      {
+        _id: collegeId,
+        "students.student": studentId,
+        "students.status": "admissionPending",
+      },
+      {
+        $set: { "students.$.status": "approved" },
+      },
+      { new: true }
+    );
+
+    console.log("collegeeeee", college);
+
+    if (!college) {
+      return res.status(404).json({
+        message:
+          "Student not found or already approved in the specified college.",
+      });
+    }
+
+    // console.log("college", college);
+
+    res.status(200).json({ message: "Student approved successfully", college });
+  } catch (error) {
+    console.error("Error approving student:", error);
+    res.status(500).json({ message: "Error approving student" });
   }
 };
