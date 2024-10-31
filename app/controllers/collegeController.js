@@ -1,5 +1,7 @@
 const College = require("../models/college");
 const User = require("../models/userModel");
+const Stripe = require("stripe");
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 exports.createCollege = async (req, res, next) => {
   const { name, admissionDate, admin } = req.body;
@@ -356,5 +358,34 @@ exports.approveStudent = async (req, res, next) => {
   } catch (error) {
     console.error("Error approving student:", error);
     res.status(500).json({ message: "Error approving student" });
+  }
+};
+
+exports.admissionFeePayment = async (req, res, next) => {
+  try {
+    const { amount } = req.body; // Replace amount with your booking fee
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: "College Booking Fee",
+            },
+            unit_amount: amount * 100, // Amount in cents
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `${process.env.FRONTEND_URL}/success`,
+      cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+    });
+
+    res.status(200).json({ message: "Payment Success", data: session });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };

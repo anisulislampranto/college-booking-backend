@@ -19,6 +19,7 @@ const authRouter = require("./app/routes/authRouter");
 const userRouter = require("./app/routes/userRouter");
 
 const College = require("./app/models/college"); // Model for scheduled deletion
+const { admissionFeePayment } = require("./app/controllers/collegeController");
 
 // middleware
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
@@ -34,6 +35,7 @@ app.use("/api/events", eventRouter);
 app.use("/api/sports", sportRouter);
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/admission-fee-payment", admissionFeePayment);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -58,7 +60,7 @@ cron.schedule("0 0 * * *", async () => {
 
     const result = await College.deleteMany({
       isDeleted: true,
-      deletedAt: { $lte: thresholdDate },
+      deletedAt: { $lte: today },
     });
 
     if (result.deletedCount > 0) {
