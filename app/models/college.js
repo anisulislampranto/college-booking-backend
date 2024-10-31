@@ -38,6 +38,17 @@ const collegeSchema = new mongoose.Schema(
           required: true,
           default: "admissionPending",
         },
+        paymentStatus: {
+          status: {
+            type: String,
+            enum: ["paid", "pending"],
+            required: true,
+            default: "pending",
+          },
+          transactionId: {
+            type: String,
+          },
+        },
       },
       ,
     ],
