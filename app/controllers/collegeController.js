@@ -352,8 +352,6 @@ exports.approveStudent = async (req, res, next) => {
       });
     }
 
-    // console.log("college", college);
-
     res.status(200).json({ message: "Student approved successfully", college });
   } catch (error) {
     console.error("Error approving student:", error);
