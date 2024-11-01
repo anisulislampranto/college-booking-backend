@@ -362,9 +362,20 @@ exports.approveStudent = async (req, res, next) => {
 };
 
 exports.admissionFeePayment = async (req, res, next) => {
+  console.log("stripe", process.env.STRIPE_SECRET_KEY);
+
   try {
     const { amount, collegeId, studentId } = req.body;
     console.log("req.body", req.body);
+
+    if (!amount || !collegeId || !studentId) {
+      throw new Error("Required fields are missing in the request body.");
+    }
+
+    // Confirm that STRIPE_SECRET_KEY is set
+    if (!process.env.STRIPE_SECRET_KEY) {
+      throw new Error("Stripe secret key is not defined.");
+    }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -373,7 +384,7 @@ exports.admissionFeePayment = async (req, res, next) => {
           price_data: {
             currency: "usd",
             product_data: { name: "College Booking Fee" },
-            unit_amount: amount * 100, // Amount in cents
+            unit_amount: amount * 100, // Convert amount to cents
           },
           quantity: 1,
         },
@@ -385,8 +396,7 @@ exports.admissionFeePayment = async (req, res, next) => {
 
     console.log("session", session);
 
-    // After creating the session, update the payment status in the database
-    const transactionId = session._id; // Use session ID as the transaction ID
+    const transactionId = session.id; // Use session ID as the transaction ID
     const updatedCollege = await College.updateOne(
       { _id: collegeId, "students.student": studentId },
       {
@@ -402,6 +412,11 @@ exports.admissionFeePayment = async (req, res, next) => {
 
     res.status(200).json({ message: "Payment Success", data: session });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error in admissionFeePayment:", error.message);
+    // Send the error message to the client
+    res.status(500).json({
+      error: "Failed to process payment",
+      message: error.message, // Include detailed error for debugging
+    });
   }
 };
