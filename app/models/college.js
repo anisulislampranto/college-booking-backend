@@ -24,6 +24,7 @@ const collegeSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    admissionFee: { type: Number },
     students: [
       {
         subject: {

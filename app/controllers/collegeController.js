@@ -363,7 +363,8 @@ exports.approveStudent = async (req, res, next) => {
 
 exports.admissionFeePayment = async (req, res, next) => {
   try {
-    const { amount } = req.body; // Replace amount with your booking fee
+    const { amount, collegeId, studentId } = req.body;
+    console.log("req.body", req.body);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -371,9 +372,7 @@ exports.admissionFeePayment = async (req, res, next) => {
         {
           price_data: {
             currency: "usd",
-            product_data: {
-              name: "College Booking Fee",
-            },
+            product_data: { name: "College Booking Fee" },
             unit_amount: amount * 100, // Amount in cents
           },
           quantity: 1,
@@ -383,6 +382,23 @@ exports.admissionFeePayment = async (req, res, next) => {
       success_url: `${process.env.FRONTEND_URL}/success`,
       cancel_url: `${process.env.FRONTEND_URL}/cancel`,
     });
+
+    console.log("session", session);
+
+    // After creating the session, update the payment status in the database
+    const transactionId = session._id; // Use session ID as the transaction ID
+    const updatedCollege = await College.updateOne(
+      { _id: collegeId, "students.student": studentId },
+      {
+        $set: {
+          "students.$.paymentStatus.status": "paid",
+          "students.$.paymentStatus.transactionId": transactionId,
+        },
+      },
+      { new: true }
+    );
+
+    console.log("updatedCollege", updatedCollege);
 
     res.status(200).json({ message: "Payment Success", data: session });
   } catch (error) {

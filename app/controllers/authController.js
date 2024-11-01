@@ -109,7 +109,20 @@ exports.login = async (req, res, next) => {
       throw Error("All fields are required!!!");
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email })
+      .populate({
+        path: "colleges.college",
+        model: "College",
+        populate: [
+          { path: "events", model: "Event" },
+          { path: "researches", model: "Research" },
+          { path: "sports", model: "Sport" },
+        ],
+      })
+      .populate({
+        path: "colleges.subject",
+        model: "Subject",
+      });
 
     if (!user) {
       return res.status(404).json({ message: "Incorrect Email" });
