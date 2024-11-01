@@ -23,7 +23,7 @@ router.get("/", getAllColleges);
 router.get("/students", getCollegeStudents);
 router.patch("/approve/:studentId", approveStudent);
 router.patch("/my-college", isLoggedIn, myColleges);
-router.get("/delete", deleteColleges);
+// router.get("/delete", deleteColleges);
 router.delete("/delete/:id", isLoggedIn, isAdmin, deleteCollege);
 router.get("/recycle-bin", isLoggedIn, deletedColleges);
 router.post("/restore/:id", isLoggedIn, isAdmin, restoreCollege);

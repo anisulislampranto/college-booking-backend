@@ -13,7 +13,7 @@ const isCollegeAdmin = require("../middlewares/isCollegeAdmin");
 const router = express.Router();
 
 router.get("/", getEvents);
-router.get("/delete", deleteEvents);
+// router.get("/delete", deleteEvents);
 router.delete("/delete/:id", isLoggedIn, isCollegeAdmin, deleteEvent);
 router.get("/:id", getEvent);
 router.post("/create", upload.single("image"), createEvent);
