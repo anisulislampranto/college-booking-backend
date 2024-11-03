@@ -4,7 +4,7 @@ const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 exports.createCollege = async (req, res, next) => {
-  const { name, admissionDate, admin } = req.body;
+  const { name, admissionDate, admin, admissionFee } = req.body;
 
   try {
     const today = new Date();
@@ -21,6 +21,7 @@ exports.createCollege = async (req, res, next) => {
       name,
       admissionDate,
       admin,
+      admissionFee,
       ...(req?.file?.path && { image: req?.file?.path }),
     });
 
