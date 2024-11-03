@@ -21,13 +21,13 @@ const router = express.Router();
 
 router.get("/", getAllColleges);
 router.get("/students", getCollegeStudents);
-router.patch("/approve/:studentId", approveStudent);
+router.patch("/approve-student/:studentId", approveStudent);
 router.patch("/my-college", isLoggedIn, myColleges);
 // router.get("/delete", deleteColleges);
 router.delete("/delete/:id", isLoggedIn, isAdmin, deleteCollege);
 router.get("/recycle-bin", isLoggedIn, deletedColleges);
 router.post("/restore/:id", isLoggedIn, isAdmin, restoreCollege);
-router.patch("/approve/:id", isLoggedIn, isAdmin, approveCollege);
+router.patch("/approve-college/:id", isLoggedIn, isAdmin, approveCollege);
 router.get("/:id", getCollege);
 router.post("/create", isLoggedIn, upload.single("image"), createCollege);
 // router.patch("/update/:id", upload.single("image"), updateCollege);

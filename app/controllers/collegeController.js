@@ -198,6 +198,8 @@ exports.deleteCollege = async (req, res) => {
 };
 
 exports.approveCollege = async (req, res, next) => {
+  console.log("data");
+
   try {
     const { id } = req.params;
 
